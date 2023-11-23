@@ -4,6 +4,7 @@
 // Kamus Data
 int input_home_menu;
 int input_mode_game;
+int input_size_board;
 
 // User Interfaces
 void tampilan_menu_awal();        // done
