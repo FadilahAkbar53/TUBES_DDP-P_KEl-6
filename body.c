@@ -566,5 +566,27 @@ void tampilan_pemenang_player2()
 
 void tampilan_pemenang_komputer()
 {
-    printf("komputer menang");
+    {
+    printf("\n\t      xx   xx                                                                                            xx   xx     ");
+    printf("\n\t       xx xx                                                                                              xx xx      ");
+    printf("\n\t        xxx    ########################################################################################    xxx       ");
+    printf("\n\t       xx xx   #                                                                                      #   xx xx      ");
+    printf("\n\t      xx   xx  #    ccccc    ooooo    mm            mm  ppppp   uu   uu  tttttttt  eeeeee  rrrrr      #  xx   xx     ");
+    printf("\n\t   oooo        #   cc       oo   oo   mmm          mmm  pp   p  uu   uu     tt     ee      rr   r     #        oooo  ");
+    printf("\n\t  oo  oo       #   cc      oo     oo  mm mm      mm mm  pp   p  uu   uu     tt     eeeeee  rrrrr      #       oo  oo ");
+    printf("\n\t  oo  oo       #   cc      oo     oo  mm   mm  mm   mm  ppppp   uu   uu     tt     eeeeee  rrr        #       oo  oo ");
+    printf("\n\t   oooo        #   cc       oo   oo   mm     mm     mm  pp      uu   uu     tt     ee      rr rr      #        oooo  ");
+    printf("\n\t               #    ccccc    ooooo    mm            mm  pp       uuuuu      tt     eeeeee  rr   rr    #");
+    printf("\n\t               #                                                                                      #");
+    printf("\n\t               #                            ww        ww  ii  n    nn                                 #");
+    printf("\n\t  xx   xx      #                            ww   ww   ww  ii  nn   nn                                 #      xx   xx  ");
+    printf("\n\t   xx xx       #                            ww  wwww  ww  ii  nnn  nn                                 #       xx xx   ");
+    printf("\n\t    xxx        #                            ww ww  ww ww  ii  nn  nnn                                 #         xx    ");
+    printf("\n\t   xx xx       #                            www      www  ii  nn   nn                                 #       xx xx   ");
+    printf("\n\t  xx   xx      #                            ww        ww  ii  nn    n                                 #      xx   xx  ");
+    printf("\n\t        oooo   #                                                                                      #   oooo        ");
+    printf("\n\t       oo  oo  ########################################################################################  oo  oo       ");
+    printf("\n\t       oo  oo                                                                                            oo  oo       ");
+    printf("\n\t        oooo                                                                                              oooo        ");
+}
 }
