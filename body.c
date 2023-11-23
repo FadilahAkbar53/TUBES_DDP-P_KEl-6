@@ -405,9 +405,6 @@ void tampilan_pilihan_mode()
 }
 
 void tampilan_pilihan_papan()
-#include <stdio.h>
-
-int main()
 {
     printf("\n\t      xx   xx                                                                                            xx   xx     ");
     printf("\n\t       xx xx                                                                                              xx xx      ");
