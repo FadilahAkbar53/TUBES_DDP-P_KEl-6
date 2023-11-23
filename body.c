@@ -403,6 +403,57 @@ void tampilan_pilihan_mode()
     printf("\n\t        oooo   # =================================================================================== #   oooo       ");
     printf("\n\t                                                   Masukan Angka : ");
 }
+
+void tampilan_pilihan_papan()
+#include <stdio.h>
+
+int main()
+{
+    printf("\n\t      xx   xx                                                                                            xx   xx     ");
+    printf("\n\t       xx xx                                                                                              xx xx      ");
+    printf("\n\t        xxx    ########################################################################################    xxx       ");
+    printf("\n\t       xx xx   #                                                                                      #   xx xx      "); 
+    printf("\n\t      xx   xx  #                                                                                      #  xx   xx     ");
+    printf("\n\t   oooo        #                 bbbbb       ooooo         aaa       rrrrr   dddddd                   #        oooo           "); 
+    printf("\n\t  oo  oo       #                 bb   b     oo   oo       aa aa      rr   r  dd   dd                  #       oo  oo          "); 
+    printf("\n\t  oo  oo       #                 bbbbbb    oo     oo     aa   aa     rrrrr   dd   dd                  #       oo  oo          ");                                
+    printf("\n\t   oooo        #                 bb    b   oo     oo    aaaaaaaaa    rrr     dd   dd                  #        oooo           ");
+    printf("\n\t               #                 bb    b    oo   oo    aa       aa   rr rr   dd   dd                  #");
+    printf("\n\t               #                 bbbbbb      ooooo    aa         aa  rr  rr  dddddd                   #");
+    printf("\n\t               #                                                                                      #");
+    printf("\n\t               #                              sssss   ii  zzzzzzz  eeeeee                             #");
+    printf("\n\t               #                             s        ii      zz   ee                                 #");
+    printf("\n\t               #                             s        ii     zz    eeeeee                             #");
+    printf("\n\t               #                              sssss   ii    zz     eeeeee                             #");
+    printf("\n\t               #                                   s  ii   zz      ee                                 #");
+    printf("\n\t               #                              sssss   ii  zzzzzzz  eeeeee                             #");
+    printf("\n\t               # ==================================================================================== #");
+    printf("\n\t               #                                                                                      #");
+    printf("\n\t               #       |    |            |    |    |    |            |    |    |    |    |    |       #");
+    printf("\n\t               #   ____|____|____    ____|____|____|____|____    ____|____|____|____|____|____|____   #");
+    printf("\n\t               #       |    |            |    |    |    |            |    |    |    |    |    |       #");
+    printf("\n\t               #   ____|____|____    ____|____|____|____|____    ____|____|____|____|____|____|____   #");
+    printf("\n\t               #       |    |            |    |    |    |            |    |    |    |    |    |       #");
+    printf("\n\t               #       |    |        ____|____|____|____|____    ____|____|____|____|____|____|____   #");
+    printf("\n\t               #                         |    |    |    |            |    |    |    |    |    |       #");
+    printf("\n\t               #       3 x 3         ____|____|____|____|____    ____|____|____|____|____|____|____   #");
+    printf("\n\t               #                         |    |    |    |            |    |    |    |    |    |       #");
+    printf("\n\t               #                         |    |    |    |        ____|____|____|____|____|____|____   #");
+    printf("\n\t               #                                                     |    |    |    |    |    |       #");
+    printf("\n\t               #                               5 x 5             ____|____|____|____|____|____|____   #");
+    printf("\n\t  xx   xx      #                                                     |    |    |    |    |    |       #      xx   xx ");
+    printf("\n\t   xx xx       #                                                     |    |    |    |    |    |       #       xx xx  ");
+    printf("\n\t    xxx        #                                                                                      #        xxx   ");
+    printf("\n\t   xx xx       #                                                                  7 x 7               #       xx xx  ");
+    printf("\n\t  xx   xx      # ==================================================================================== #      xx   xx ");
+    printf("\n\t        oooo   #                                |1| 3 x 3                                             #   oooo       ");
+    printf("\n\t       oo  oo  #                                |2| 5 x 5                                             #  oo  oo      ");
+    printf("\n\t       oo  oo  #                                |3| 7 x 7                                             #  oo  oo      ");
+    printf("\n\t        oooo   #                                |0| Back                                              #   oooo       ");
+    printf("\n\t               # ==================================================================================== #              ");
+    printf("\n\t                                                   Masukan Angka : ");
+}
+
 void tampilan_pilihan_level()
 {
     system("cls");
