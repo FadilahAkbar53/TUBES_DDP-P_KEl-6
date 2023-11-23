@@ -8,6 +8,7 @@
 // kamus data
 int input_home_menu;
 int input_mode_game;
+int input_size_board;
 int size;
 char winner;
 char response = ' ';
@@ -33,14 +34,14 @@ int main()
                 winner = ' ';
                 response = ' ';
 
-                printf("\t\t| 3 | 3x3 \n");
-                printf("\t\t| 5 | 5x5 \n");
-                printf("\t\t| 7 | 7x7 \n");
-                printf("Pilih Papan Yang Akan digunakan : ");
-                scanf("%d", &size);
+                system("cls");
+                tampilan_pilihan_papan();
+                scanf("%d", &input_size_board);
+
+                switch (input_size_board)
 
                 // Validasi ukuran papan
-                if (size != 3 && size != 5 && size != 7)
+                if (size != 1 && size != 2 && size != 3)
                 {
                     printf("Ukuran Papan yang anda pilih salah.\n");
                     return 1;
