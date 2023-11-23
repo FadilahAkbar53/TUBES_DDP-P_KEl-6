@@ -406,6 +406,7 @@ void tampilan_pilihan_mode()
 
 void tampilan_pilihan_papan()
 {
+    system("cls");
     printf("\n\t      xx   xx                                                                                            xx   xx     ");
     printf("\n\t       xx xx                                                                                              xx xx      ");
     printf("\n\t        xxx    ########################################################################################    xxx       ");
