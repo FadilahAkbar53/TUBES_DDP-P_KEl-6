@@ -284,15 +284,15 @@ void cetak_papan(int size)
 void tampilan_menu_awal()
 {
     int inputAwal;
-    printf("\n\t        xx   xx                                                                                            xx   xx     ");
-    printf("\n\t         xx xx                                                                                              xx xx      ");
-    printf("\n\t          xxx    #======================================================================================#    xxx       ");
-    printf("\n\t         xx xx   #                                                                                      #   xx xx      ");
-    printf("\n\t        xx   xx  #        ww   ww   ww  eeeeee  ll       cccccc    ooooo    mm        mm  eeeeee        #  xx   xx     ");
-    printf("\n\t     oooo        #        ww  wwww  ww  ee      ll      cc        oo   oo   mmm      mmm  ee            #        oooo  ");
-    printf("\n\t    oo  oo       #        ww ww  ww ww  eeeeee  ll      cc       oo     oo  mm mm  mm mm  eeeeee        #       oo  oo ");
-    printf("\n\t    oo  oo       #        www      www  ee      ll      cc        oo   oo   mm   mm   mm  ee            #       oo  oo ");
-    printf("\n\t     oooo        #        ww        ww  eeeeee  llllll   cccccc    ooooo    mm        mm  eeeeee        #        oooo  ");
+	printf("\n\t        xx   xx                                                                                            xx   xx     ");
+	printf("\n\t         xx xx                                                                                              xx xx      ");
+	printf("\n\t          xxx    ########################################################################################    xxx       ");
+	printf("\n\t         xx xx   #                                                                                      #   xx xx      "); 
+	printf("\n\t        xx   xx  #        ww   ww   ww  eeeeee  ll       cccccc    ooooo    mm        mm  eeeeee        #  xx   xx     ");
+	printf("\n\t     oooo        #        ww  wwww  ww  ee      ll      cc        oo   oo   mmm      mmm  ee            #        oooo           "); 
+	printf("\n\t    oo  oo       #        ww ww  ww ww  eeeeee  ll      cc       oo     oo  mm mm  mm mm  eeeeee        #       oo  oo          "); 
+	printf("\n\t    oo  oo       #        www      www  ee      ll      cc        oo   oo   mm   mm   mm  ee            #       oo  oo          ");                                
+    printf("\n\t     oooo        #        ww        ww  eeeeee  llllll   cccccc    ooooo    mm        mm  eeeeee        #        oooo           ");
     printf("\n\t                 #                                                                                      #");
     printf("\n\t                 #                                 tttttttt   ooooo                                     #");
     printf("\n\t                 #                                    tt     oo   oo                                    #");
@@ -300,11 +300,11 @@ void tampilan_menu_awal()
     printf("\n\t                 #                                    tt     oo   oo                                    #");
     printf("\n\t                 #                                    tt      ooooo                                     #");
     printf("\n\t                 #                                                                                      #");
-    printf("\n\t                 #   xxxxxxxx  oo  xx  xx    xxxxxxxx    ooo      xx  xx    xxxxxxxx  ooooo    xxxxxx   #");
-    printf("\n\t                 #      xx     oo  xx xx        xx      oo oo     xx xx        xx    oo   oo   xx       #");
-    printf("\n\t    xx   xx      #      xx     oo  xxx          xx     ooooooo    xxx          xx   oo     oo  xxxxxx   #      xx   xx ");
-    printf("\n\t     xx xx       #      xx     oo  xx xx        xx    oo     oo   xx xx        xx    oo   oo   xx       #       xx xx  ");
-    printf("\n\t      xxx        #      xx     oo  xx   xx      xx   oo       oo  xx   xx      xx     ooooo    xxxxxx   #        xxx   ");
+    printf("\n\t                 #   xxxxxxxx  oo   xxxxx    xxxxxxxx    ooo       xxxxx    xxxxxxxx  ooooo    xxxxxx   #");
+    printf("\n\t                 #      xx     oo  xx           xx      oo oo     xx           xx    oo   oo   xx       #");
+    printf("\n\t    xx   xx      #      xx     oo  xx           xx     ooooooo    xx           xx   oo     oo  xxxxxx   #      xx   xx ");
+    printf("\n\t     xx xx       #      xx     oo  xx           xx    oo     oo   xx           xx    oo   oo   xx       #       xx xx  ");
+    printf("\n\t      xxx        #      xx     oo   xxxxx       xx   oo       oo   xxxxx       xx     ooooo    xxxxxx   #        xxx   ");
     printf("\n\t     xx xx       #                                                                                      #       xx xx  ");
     printf("\n\t    xx   xx      # ==================================================================================== #      xx   xx ");
     printf("\n\t          oooo   #                     oxoxoxoxoxoxoxox MENU HOME xoxoxoxoxoxoxoxo                      #   oooo       ");
