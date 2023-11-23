@@ -1,6 +1,285 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
+#include <time.h>
 #include "header.h"
+
+#define MAX_SIZE 7
+
+char board[MAX_SIZE][MAX_SIZE];
+const char PLAYER = 'X';
+const char COMPUTER = 'O';
+
+void reset_Papan(int size)
+{
+    for (int i = 0; i < size; i++)
+    {
+        for (int j = 0; j < size; j++)
+        {
+            board[i][j] = ' ';
+        }
+    }
+}
+
+int cek_papan_kosong(int size)
+{
+    int kotakKosong = size * size;
+
+    for (int i = 0; i < size; i++)
+    {
+        for (int j = 0; j < size; j++)
+        {
+            if (board[i][j] != ' ')
+            {
+                kotakKosong--;
+            }
+        }
+    }
+    return kotakKosong;
+}
+
+void pergerakan_pemain(int size)
+{
+    int x, y;
+
+    do
+    {
+        printf("Enter row #(1-%d): ", size);
+        scanf(" %d", &x);
+        x--;
+        printf("Enter column #(1-%d): ", size);
+        scanf(" %d", &y);
+        y--;
+
+        if (x < 0 || x >= size || y < 0 || y >= size)
+        {
+            printf("Invalid move! Out of bounds.\n");
+        }
+        else if (board[x][y] != ' ')
+        {
+            printf("Invalid move! Cell already occupied.\n");
+        }
+        else
+        {
+            board[x][y] = PLAYER;
+            break;
+        }
+    } while (1);
+}
+
+void pergerakan_komputer(int size)
+{
+    srand(time(0));
+    int x, y;
+
+    if (cek_papan_kosong(size) > 0)
+    {
+        do
+        {
+            x = rand() % size;
+            y = rand() % size;
+        } while (board[x][y] != ' ');
+
+        board[x][y] = COMPUTER;
+    }
+    else
+    {
+        cetak_pemenang(' ');
+    }
+}
+
+char cek_pemenang(int size)
+{
+    int winCondition = (size == 3) ? 3 : ((size == 5) ? 4 : 5);
+
+    for (int i = 0; i < size; i++)
+    {
+        // Check rows
+        for (int j = 0; j <= size - winCondition; j++)
+        {
+            char firstCell = board[i][j];
+            int count = 0;
+            for (int k = 0; k < winCondition; k++)
+            {
+                if (board[i][j + k] == firstCell && firstCell != ' ')
+                {
+                    count++;
+                }
+            }
+            if (count == winCondition)
+            {
+                return firstCell;
+            }
+        }
+
+        // Check columns
+        for (int j = 0; j <= size - winCondition; j++)
+        {
+            char firstCell = board[j][i];
+            int count = 0;
+            for (int k = 0; k < winCondition; k++)
+            {
+                if (board[j + k][i] == firstCell && firstCell != ' ')
+                {
+                    count++;
+                }
+            }
+            if (count == winCondition)
+            {
+                return firstCell;
+            }
+        }
+    }
+
+    // Check diagonals
+    for (int i = 0; i <= size - winCondition; i++)
+    {
+        for (int j = 0; j <= size - winCondition; j++)
+        {
+            char firstCell = board[i][j];
+            int count = 0;
+            for (int k = 0; k < winCondition; k++)
+            {
+                if (board[i + k][j + k] == firstCell && firstCell != ' ')
+                {
+                    count++;
+                }
+            }
+            if (count == winCondition)
+            {
+                return firstCell;
+            }
+        }
+    }
+
+    for (int i = 0; i <= size - winCondition; i++)
+    {
+        for (int j = winCondition - 1; j < size; j++)
+        {
+            char firstCell = board[i][j];
+            int count = 0;
+            for (int k = 0; k < winCondition; k++)
+            {
+                if (board[i + k][j - k] == firstCell && firstCell != ' ')
+                {
+                    count++;
+                }
+            }
+            if (count == winCondition)
+            {
+                return firstCell;
+            }
+        }
+    }
+
+    return ' ';
+}
+
+void cetak_pemenang(char winner)
+{
+    if (winner == PLAYER)
+    {
+        tampilan_pemenang_player1();
+    }
+    else if (winner == COMPUTER)
+    {
+        tampilan_pemenang_komputer();
+    }
+    else
+    {
+        printf("IT'S A TIE!\n");
+    }
+}
+
+void cetak_papan(int size)
+{
+    if (size == 3)
+    {
+        system("cls");
+        printf("\n\t\t============================");
+        printf("\n\t\t|   ==== Board 3x3 ====    |");
+        printf("\n\t\t============================");
+        printf("\n\t\t|        |        |        |");
+        printf("\n\t\t|    %C   |    %C   |    %C   |", board[0][0], board[0][1], board[0][2]);
+        printf("\n\t\t|        |        |        |");
+        printf("\n\t\t|--------------------------| ");
+        printf("\n\t\t|        |        |        |");
+        printf("\n\t\t|    %C   |    %C   |    %C   |", board[1][0], board[1][1], board[1][2]);
+        printf("\n\t\t|        |        |        |");
+        printf("\n\t\t|--------------------------| ");
+        printf("\n\t\t|        |        |        |");
+        printf("\n\t\t|    %C   |    %C   |    %C   |", board[2][0], board[2][1], board[2][2]);
+        printf("\n\t\t|        |        |        |");
+        printf("\n\t\t|--------------------------| ");
+        printf("\n");
+    }
+    if (size == 5)
+    {
+        system("cls");
+        printf("\n\t\t===============================================");
+        printf("\n\t\t|        ========= Board 5x5 =========         |");
+        printf("\n\t\t===============================================");
+        printf("\n\t\t|        |        |        |         |         |");
+        printf("\n\t\t|    %c   |    %c   |    %c   |     %c   |      %c  |", board[0][0], board[0][1], board[0][2], board[0][3], board[0][4]);
+        printf("\n\t\t|        |        |        |         |         |");
+        printf("\n\t\t|----------------------------------------------|");
+        printf("\n\t\t|        |        |        |         |         |");
+        printf("\n\t\t|    %c   |    %c   |    %c   |     %c   |      %c  |", board[1][0], board[1][1], board[1][2], board[1][3], board[1][4]);
+        printf("\n\t\t|        |        |        |         |         |");
+        printf("\n\t\t|----------------------------------------------|");
+        printf("\n\t\t|        |        |        |         |         |");
+        printf("\n\t\t|    %c   |    %c   |    %c   |      %c  |     %c  |", board[2][0], board[2][1], board[2][2], board[2][3], board[2][4]);
+        printf("\n\t\t|        |        |        |         |         |");
+        printf("\n\t\t|----------------------------------------------|");
+        printf("\n\t\t|        |        |        |         |         |");
+        printf("\n\t\t|    %c   |    %c   |    %c   |      %c  |     %c  |", board[3][0], board[3][1], board[3][2], board[3][3], board[3][4]);
+        printf("\n\t\t|        |        |        |         |         |");
+        printf("\n\t\t|----------------------------------------------|");
+        printf("\n\t\t|        |        |        |         |         |");
+        printf("\n\t\t|    %c   |    %c   |    %c   |     %c   |      %c  |", board[4][0], board[4][1], board[4][2], board[4][3], board[4][4]);
+        printf("\n\t\t|        |        |        |         |         |");
+        printf("\n\t\t|----------------------------------------------|");
+        printf("\n");
+    }
+    if (size == 7)
+    {
+        system("cls");
+        printf("\n\t\t====================================================================");
+        printf("\n\t\t|                     ========= Board 7x7 =========                |");
+        printf("\n\t\t====================================================================");
+        printf("\n\t\t|        |        |        |         |         |         |         |");
+        printf("\n\t\t|    %c   |    %c   |    %c   |     %c   |     %c   |     %c   |    %c    |", board[0][0], board[0][1], board[0][2], board[0][3], board[0][4], board[0][5], board[0][6]);
+        printf("\n\t\t|        |        |        |         |         |         |         |");
+        printf("\n\t\t|------------------------------------------------------------------|");
+        printf("\n\t\t|        |        |        |         |         |         |         |");
+        printf("\n\t\t|    %c   |    %c   |    %c   |     %c   |     %c   |     %c   |    %c    |", board[1][0], board[1][1], board[1][2], board[1][3], board[1][4], board[1][5], board[1][6]);
+        printf("\n\t\t|        |        |        |         |         |         |         |");
+        printf("\n\t\t|------------------------------------------------------------------|");
+        printf("\n\t\t|        |        |        |         |         |         |         |");
+        printf("\n\t\t|    %c   |    %c   |    %c   |     %c   |     %c   |     %c   |    %c    |", board[2][0], board[2][1], board[2][2], board[2][3], board[2][4], board[2][5], board[2][6]);
+        printf("\n\t\t|        |        |        |         |         |         |         |");
+        printf("\n\t\t|------------------------------------------------------------------|");
+        printf("\n\t\t|        |        |        |         |         |         |         |");
+        printf("\n\t\t|    %c   |    %c   |    %c   |     %c   |     %c   |     %c   |    %c    |", board[3][0], board[3][1], board[3][2], board[3][3], board[3][4], board[3][5], board[3][6]);
+        printf("\n\t\t|        |        |        |         |         |         |         |");
+        printf("\n\t\t|------------------------------------------------------------------|");
+        printf("\n\t\t|        |        |        |         |         |         |         |");
+        printf("\n\t\t|    %c   |    %c   |    %c   |     %c   |     %c   |     %c   |    %c    |", board[4][0], board[4][1], board[4][2], board[4][3], board[4][4], board[4][5], board[4][6]);
+        printf("\n\t\t|        |        |        |         |         |         |         |");
+        printf("\n\t\t|------------------------------------------------------------------|");
+        printf("\n\t\t|        |        |        |         |         |         |         |");
+        printf("\n\t\t|    %c   |    %c   |    %c   |     %c   |     %c   |     %c   |    %c    |", board[5][0], board[5][1], board[5][2], board[5][3], board[5][4], board[5][5], board[5][6]);
+        printf("\n\t\t|        |        |        |         |         |         |         |");
+        printf("\n\t\t|------------------------------------------------------------------|");
+        printf("\n\t\t|        |        |        |         |         |         |         |");
+        printf("\n\t\t|    %c   |    %c   |    %c   |     %c   |     %c   |     %c   |    %c    |", board[6][0], board[6][1], board[6][2], board[6][3], board[6][4], board[6][5], board[6][6]);
+        printf("\n\t\t|        |        |        |         |         |         |         |");
+        printf("\n\t\t|------------------------------------------------------------------|");
+
+        printf("\n\n");
+    }
+}
 
 void tampilan_menu_awal()
 {
@@ -124,6 +403,43 @@ void tampilan_pilihan_mode()
     printf("\n\t        oooo   # =================================================================================== #   oooo       ");
     printf("\n\t                                                   Masukan Angka : ");
 }
+void tampilan_pilihan_level()
+{
+    system("cls");
+    printf("\n\t      xx   xx                                                                                           xx   xx     ");
+    printf("\n\t       xx xx                                                                                             xx xx      ");
+    printf("\n\t        xxx    #######################################################################################    xxx       ");
+    printf("\n\t       xx xx   #                                                                                     #   xx xx      ");
+    printf("\n\t      xx   xx  #      cccccc  hh    hh    ooooo      ooooo      sssss   eeeeee                       #  xx   xx     ");
+    printf("\n\t   oooo        #     cc       hh    hh   oo   oo    oo   oo    s        ee                           #        oooo  ");
+    printf("\n\t  oo  oo       #     cc       hhhhhhhh  oo     oo  oo     oo   s        eeeeee                       #       oo  oo ");
+    printf("\n\t  oo  oo       #     cc       hhhhhhhh  oo     oo  oo     oo    sssss   eeeeee                       #       oo  oo ");
+    printf("\n\t   oooo        #     cc       hh    hh   oo   oo    oo   oo          s  ee                           #        oooo  ");
+    printf("\n\t               #      cccccc  hh    hh    ooooo      ooooo     ssssss   eeeeee                       #");
+    printf("\n\t               #                                                                                     #");
+    printf("\n\t               #                                ggggg         aaa       mm            mm  eeeeee     #");
+    printf("\n\t               #                               gg            aa aa      mmm          mmm  ee         #");
+    printf("\n\t               #                               gg           aa   aa     mm mm      mm mm  eeeeee     #");
+    printf("\n\t               #                               gg  gggg    aaaaaaaaa    mm   mm  mm   mm  eeeeee     #");
+    printf("\n\t               #                               gg    gg   aa       aa   mm     mm     mm  ee         #");
+    printf("\n\t               #                                gggggg   aa         aa  mm            mm  eeeeee     #");
+    printf("\n\t               #                                                                                     #");
+    printf("\n\t               #     ll        eeeeee  vv        vv  eeeeee  ll                                      #");
+    printf("\n\t               #     ll        ee       vv      vv   ee      ll                                      #");
+    printf("\n\t               #     ll        eeeeee    vv    vv    eeeeee  ll                                      #");
+    printf("\n\t               #     ll        eeeeee     vv  vv     eeeeee  ll                                      #");
+    printf("\n\t               #     ll        ee          vvvv      ee      ll                                      #");
+    printf("\n\t  xx   xx      #     llllllll  eeeeee       vv       eeeeee  lllllllll                               #      xx   xx ");
+    printf("\n\t   xx xx       #                                                                                     #       xx xx  ");
+    printf("\n\t    xxx        # =================================================================================== #        xxx   ");
+    printf("\n\t   xx xx       #                     oxoxoxoxoxoxoxoxox LEVEL  xoxoxoxoxoxoxoxox                     #       xx xx  ");
+    printf("\n\t  xx   xx      # =================================================================================== #      xx   xx ");
+    printf("\n\t        oooo   #                                        |1| EASY                                     #   oooo       ");
+    printf("\n\t       oo  oo  #                                        |2| MEDIUM                                   #  oo  oo      ");
+    printf("\n\t       oo  oo  #                                        |0| HARD                                     #  oo  oo      ");
+    printf("\n\t        oooo   # =================================================================================== #   oooo       ");
+    printf("\n\t                                                   Masukan Angka : ");
+}
 
 void tampilan_masukan_nama()
 {
@@ -197,4 +513,9 @@ void tampilan_pemenang_player2()
     printf("\n\t       oo  oo  ########################################################################################  oo  oo       ");
     printf("\n\t       oo  oo                                                                                            oo  oo       ");
     printf("\n\t        oooo                                                                                              oooo        ");
+}
+
+void tampilan_pemenang_komputer()
+{
+    printf("komputer menang");
 }

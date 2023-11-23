@@ -11,22 +11,23 @@ void tampilan_pemenang_player1(); // done
 void tampilan_pemenang_player2(); // done
 void tampilan_pemenang_komputer();
 void tampilan_pemenang_draw();
-void tampilan_pilihan_level();
+void tampilan_pilihan_papan();     
+void tampilan_pilihan_level();     // done
 void tampilan_pilihan_mode();      // done
 void tampilan_masukan_nama();      // done
 void tampilan_pelaturan_bermain(); // done
 
 // opsi pilihan & pelaturan
 void pilihan_level();
-void pilihan_papan();
-void masukan_nama();
-
-//
-void cetak_papan();
-void pergerakan_pemain();
-void pergerakan_komputer();
+void input_nama();
 void kesempatan_waktu();
-void cek_papan_kosong();
-void cek_pemenang();
+
+void cetak_papan(int size);         // done
+void reset_Papan(int size);         // done
+int cek_papan_kosong(int size);     // done
+void pergerakan_pemain(int size);   // done
+void pergerakan_komputer(int size); // done
+char cek_pemenang(int size);        // done
+void cetak_pemenang(char winner);   // done
 
 #endif
