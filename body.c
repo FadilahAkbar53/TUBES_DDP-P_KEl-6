@@ -566,7 +566,6 @@ void tampilan_pemenang_player2()
 
 void tampilan_pemenang_komputer()
 {
-    {
     printf("\n\t      xx   xx                                                                                            xx   xx     ");
     printf("\n\t       xx xx                                                                                              xx xx      ");
     printf("\n\t        xxx    ########################################################################################    xxx       ");
@@ -588,5 +587,4 @@ void tampilan_pemenang_komputer()
     printf("\n\t       oo  oo  ########################################################################################  oo  oo       ");
     printf("\n\t       oo  oo                                                                                            oo  oo       ");
     printf("\n\t        oooo                                                                                              oooo        ");
-}
 }
