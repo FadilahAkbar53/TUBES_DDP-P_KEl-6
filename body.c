@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <ctype.h>
 #include <time.h>
 #include "header.h"
 
@@ -9,7 +10,7 @@
 
 char board[MAX_SIZE][MAX_SIZE];
 const char PLAYER1 = 'X';
-const char PLAYER2 = 'O';
+const char PLAYER2 = '0';
 const char COMPUTER = 'O';
 
 void reset_Papan(int size)
@@ -46,6 +47,7 @@ void pergerakan_pemain1(int size)
 
     do
     {
+        printf("PLAYER 1\n");
         printf("Enter row #(1-%d): ", size);
         scanf(" %d", &x);
         x--;
@@ -64,9 +66,10 @@ void pergerakan_pemain1(int size)
         else
         {
             board[x][y] = PLAYER1;
+            cetak_papan(size);
             break;
         }
-    } while (1);
+    } while (board[x][y] != ' ');
 }
 
 void pergerakan_pemain2(int size)
@@ -75,6 +78,7 @@ void pergerakan_pemain2(int size)
 
     do
     {
+        printf("PLAYER 2\n");
         printf("Enter row #(1-%d): ", size);
         scanf(" %d", &x);
         x--;
@@ -93,6 +97,8 @@ void pergerakan_pemain2(int size)
         else
         {
             board[x][y] = PLAYER2;
+            cetak_papan(size);
+
             break;
         }
     } while (1);
@@ -114,6 +120,7 @@ void pergerakan_komputer(int size)
     }
     else
     {
+        cetak_papan(size);
         cetak_pemenang(' ');
     }
 }
@@ -221,7 +228,7 @@ void cetak_pemenang(char winner)
     }
     else
     {
-        printf("IT'S A TIE!\n");
+        tampilan_pemenang_draw();
     }
 }
 
@@ -349,7 +356,7 @@ void tampilan_menu_awal()
     printf("\n\t                                                     Masukan Angka : ");
 }
 
-void tampilan_pelaturan_bermain()
+void tampilan_peraturan_bermain()
 {
     system("cls");
     printf("\n\t      xx   xx                                                                                            xx   xx     ");
@@ -432,7 +439,7 @@ void tampilan_pilihan_mode()
     printf("\n\t  xx   xx      # =================================================================================== #      xx   xx ");
     printf("\n\t        oooo   #                                |1| Player VS Computer                               #   oooo       ");
     printf("\n\t       oo  oo  #                                |2| Player VS Player                                 #  oo  oo      ");
-    printf("\n\t       oo  oo  #                                |0| Back                                             #  oo  oo      ");
+    printf("\n\t       oo  oo  #                                |3| Back                                             #  oo  oo      ");
     printf("\n\t        oooo   # =================================================================================== #   oooo       ");
     printf("\n\t                                                   Masukan Angka : ");
 }
@@ -469,7 +476,7 @@ void tampilan_pilihan_level()
     printf("\n\t  xx   xx      # =================================================================================== #      xx   xx ");
     printf("\n\t        oooo   #                                        |1| EASY                                     #   oooo       ");
     printf("\n\t       oo  oo  #                                        |2| MEDIUM                                   #  oo  oo      ");
-    printf("\n\t       oo  oo  #                                        |0| HARD                                     #  oo  oo      ");
+    printf("\n\t       oo  oo  #                                        |3| HARD                                     #  oo  oo      ");
     printf("\n\t        oooo   # =================================================================================== #   oooo       ");
     printf("\n\t                                                   Masukan Angka : ");
 }
@@ -521,7 +528,7 @@ void tampilan_pilihan_papan()
 
 void tampilan_masukan_nama()
 {
-    system("cls");
+    // system("cls");
     printf("\n\t      xx   xx                                                                                            xx   xx     ");
     printf("\n\t       xx xx                                                                                              xx xx      ");
     printf("\n\t        xxx    ########################################################################################    xxx       ");
@@ -612,6 +619,64 @@ void tampilan_pemenang_komputer()
     printf("\n\t    xxx        #                            ww ww  ww ww  ii  nn  nnn                                 #         xx    ");
     printf("\n\t   xx xx       #                            www      www  ii  nn   nn                                 #       xx xx   ");
     printf("\n\t  xx   xx      #                            ww        ww  ii  nn    n                                 #      xx   xx  ");
+    printf("\n\t        oooo   #                                                                                      #   oooo        ");
+    printf("\n\t       oo  oo  ########################################################################################  oo  oo       ");
+    printf("\n\t       oo  oo                                                                                            oo  oo       ");
+    printf("\n\t        oooo                                                                                              oooo        ");
+}
+
+void tampilan_pemenang_draw()
+{
+    printf("\n\t      xx   xx                                                                                            xx   xx     ");
+    printf("\n\t       xx xx                                                                                              xx xx      ");
+    printf("\n\t        xxx    ########################################################################################    xxx       ");
+    printf("\n\t       xx xx   #                                                                                      #   xx xx      ");
+    printf("\n\t      xx   xx  #          ddddd    rrrrr        aaa       ww          ww                              #  xx   xx     ");
+    printf("\n\t   oooo        #          dd   dd  rr   r      aa aa      ww     ww   ww                              #        oooo  ");
+    printf("\n\t  oo  oo       #          dd   dd  rrrrr      aa   aa     ww    wwww  ww                              #       oo  oo ");
+    printf("\n\t  oo  oo       #          dd   dd  rrrr      aaaaaaaaa    ww  ww   ww ww                              #       oo  oo ");
+    printf("\n\t   oooo        #          dd   dd  rr rr    aa       aa   www        www                              #        oooo  ");
+    printf("\n\t               #          ddddd    rr  rr  aa         aa  ww          ww                              #");
+    printf("\n\t               #                                                                                      #");
+    printf("\n\t               #                            gggggg        aaa       mm         mm  eeeeee             #");
+    printf("\n\t  xx   xx      #                           gg            aa aa      mmm       mmm  ee                 #      xx   xx  ");
+    printf("\n\t   xx xx       #                           gg           aa   aa     mm mm   mm mm  eeeeee             #       xx xx   ");
+    printf("\n\t    xxx        #                           gg  gggg    aaaaaaaaa    mm   mmm   mm  eeeeee             #         xx    ");
+    printf("\n\t   xx xx       #                           gg    gg   aa       aa   mm    mm   mm  ee                 #       xx xx   ");
+    printf("\n\t  xx   xx      #                            gggggg   aa         aa  mm         mm  eeeeee             #      xx   xx  ");
+    printf("\n\t        oooo   #                                                                                      #   oooo        ");
+    printf("\n\t       oo  oo  ########################################################################################  oo  oo       ");
+    printf("\n\t       oo  oo                                                                                            oo  oo       ");
+    printf("\n\t        oooo                                                                                              oooo        ");
+}
+
+void tampilan_exit()
+{
+    printf("\n\t      xx   xx                                                                                            xx   xx     ");
+    printf("\n\t       xx xx                                                                                              xx xx      ");
+    printf("\n\t        xxx    ########################################################################################    xxx       ");
+    printf("\n\t       xx xx   #                                                                                      #   xx xx      ");
+    printf("\n\t      xx   xx  #       tttttttt  hh    hh       aaaa       n    nn  kk   kk   n    nn   ssssss        #  xx   xx     ");
+    printf("\n\t   oooo        #          tt     hh    hh      aa  aa      nn   nn  kk  kk    nn   nn  ss             #        oooo  ");
+    printf("\n\t  oo  oo       #          tt     hhhhhhhh     aa    aa     nnn  nn  kkkk      nnn  nn  ss             #       oo  oo ");
+    printf("\n\t  oo  oo       #          tt     hhhhhhhh    aaaaaaaaaa    nn  nnn  kkkk      nn  nnn   ssssss        #       oo  oo ");
+    printf("\n\t   oooo        #          tt     hh    hh   aa        aa   nn   nn  kk  kk    nn   nn        ss       #        oooo  ");
+    printf("\n\t               #          tt     hh    hh  aa          aa  nn    n  kk    kk  nn    n   ssssss        #");
+    printf("\n\t               #                                                                                      #");
+    printf("\n\t               #                              fffffffff   ooooo    rrrrrrr                            #");
+    printf("\n\t               #                            ff          oo    oo  rr      r                           #");
+    printf("\n\t               #                            ff          oo    oo  rr      r                           #");
+    printf("\n\t               #                            ffffffff    oo    oo  rrrrrrrr                            #");
+    printf("\n\t               #                            ff          oo    oo  rr    rr                            #");
+    printf("\n\t               #                            ff          00    00  rr     rr                           #");
+    printf("\n\t               #                            ff           ooooo    rr      rr                          #");
+    printf("\n\t               #                                                                                      #");
+    printf("\n\t               #         ppppppp   ll             aaaa       yy     yy  ii  n    nn   gggggggg        #");
+    printf("\n\t  xx   xx      #         pp     p  ll            aa  aa       yy   yy   ii  nn   nn  gg               #      xx   xx  ");
+    printf("\n\t   xx xx       #         ppppppp   ll           aa    aa       yy yy    ii  nnn  nn  gg               #       xx xx   ");
+    printf("\n\t    xxx        #         pp        ll          aaaaaaaaaa       yyy     ii  nn  nnn  gg   gggg        #         xx    ");
+    printf("\n\t   xx xx       #         pp        ll         aa        aa      y y     ii  nn   nn  gg     gg        #       xx xx   ");
+    printf("\n\t  xx   xx      #         pp        llllllll  aa          aa     y y     ii  nn    n   gggggggg        #      xx   xx  ");
     printf("\n\t        oooo   #                                                                                      #   oooo        ");
     printf("\n\t       oo  oo  ########################################################################################  oo  oo       ");
     printf("\n\t       oo  oo                                                                                            oo  oo       ");
