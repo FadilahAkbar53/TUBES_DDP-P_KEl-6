@@ -4,9 +4,11 @@
 #include <string.h>
 #include <ctype.h>
 #include <time.h>
+#include <limits.h>
 #include "header.h"
 
 #define MAX_SIZE 7
+#define TURN_TIME_LIMIT 5
 
 char board[MAX_SIZE][MAX_SIZE];
 const char PLAYER1 = 'X';
@@ -44,10 +46,11 @@ int cek_papan_kosong(int size)
 void pergerakan_pemain1(int size)
 {
     int x, y;
+    startTime = time(NULL);
 
     do
     {
-        printf("PLAYER 1 - X\n");
+        printf("PLAYER 1 - X %s\n", &player1.nama);
         printf("Enter row #(1-%d): ", size);
         scanf(" %d", &x);
         x--;
@@ -66,19 +69,20 @@ void pergerakan_pemain1(int size)
         else
         {
             board[x][y] = PLAYER1;
-            cetak_papan(size);
+            cetak_papan(size, 1);
             break;
         }
-    } while (board[x][y] != ' ');
+    } while (board[x][y] != ' ' && difftime(time(NULL), startTime) <= TURN_TIME_LIMIT);
 }
 
 void pergerakan_pemain2(int size)
 {
     int x, y;
+    startTime = time(NULL);
 
     do
     {
-        printf("PLAYER 2 - O\n");
+        printf("PLAYER 2 - O %s\n", &player2.nama);
         printf("Enter row #(1-%d): ", size);
         scanf(" %d", &x);
         x--;
@@ -97,33 +101,97 @@ void pergerakan_pemain2(int size)
         else
         {
             board[x][y] = PLAYER2;
-            cetak_papan(size);
-
+            cetak_papan(size, 2);
             break;
         }
-    } while (1);
+    } while (board[x][y] != ' ' && difftime(time(NULL), startTime) <= TURN_TIME_LIMIT);
 }
 
-void pergerakan_komputer(int size)
+void pergerakan_komputer(int size, int difficulty)
 {
-    srand(time(0));
-    int x, y;
-
+    int bestMove;
     if (cek_papan_kosong(size) > 0)
     {
-        do
+        switch (difficulty)
         {
-            x = rand() % size;
-            y = rand() % size;
-        } while (board[x][y] != ' ');
+        case 1: // Easy
+            do
+            {
+                bestMove = rand() % (size * size);
+            } while (board[bestMove / size][bestMove % size] != ' ');
+            break;
 
-        board[x][y] = COMPUTER;
+        case 2: // Medium
+            bestMove = minimax(COMPUTER, 5, size);
+            break;
+
+        case 3: // Hard
+            bestMove = minimax(COMPUTER, 10, size);
+            break;
+
+        default:
+            break;
+        }
+
+        board[bestMove / size][bestMove % size] = COMPUTER;
     }
     else
     {
-        cetak_papan(size);
-        cetak_pemenang(' ');
+        cetak_papan(size, 1);
+        cetak_pemenang(' ', 1);
     }
+}
+
+int minimax(char currentPlayer, int depth, int size)
+{
+    int score;
+    int bestScore;
+
+    if (currentPlayer == COMPUTER)
+        bestScore = INT_MIN;
+    else
+        bestScore = INT_MAX;
+
+    if (depth == 0 || cek_papan_kosong(size) == 0 || cek_pemenang(size) != ' ')
+        return evaluateBoard(size);
+
+    for (int i = 0; i < size; i++)
+    {
+        for (int j = 0; j < size; j++)
+        {
+            if (board[i][j] == ' ')
+            {
+                board[i][j] = currentPlayer;
+
+                if (currentPlayer == COMPUTER)
+                {
+                    score = minimax(PLAYER1, depth - 1, size);
+                    bestScore = (score > bestScore) ? score : bestScore;
+                }
+                else
+                {
+                    score = minimax(COMPUTER, depth - 1, size);
+                    bestScore = (score < bestScore) ? score : bestScore;
+                }
+
+                board[i][j] = ' ';
+            }
+        }
+    }
+
+    return bestScore;
+}
+
+int evaluateBoard(int size)
+{
+    char winner = cek_pemenang(size);
+
+    if (winner == COMPUTER)
+        return 10000; // Skor tinggi jika komputer menang
+    else if (winner == PLAYER1)
+        return -10000; // Skor rendah jika pemain 1 menang
+    else
+        return 0; // Skor seimbang jika belum ada pemenang
 }
 
 char cek_pemenang(int size)
@@ -213,19 +281,22 @@ char cek_pemenang(int size)
     return ' ';
 }
 
-void cetak_pemenang(char winner)
+void cetak_pemenang(char winner, int modePlyvsCmp)
 {
     if (winner == PLAYER1)
     {
         tampilan_pemenang_player1();
+        player1.skor++;
     }
     else if (winner == PLAYER2)
     {
         tampilan_pemenang_player2();
+        player2.skor++;
     }
     else if (winner == COMPUTER)
     {
         tampilan_pemenang_komputer();
+        computer.skor++;
     }
     else
     {
@@ -233,26 +304,15 @@ void cetak_pemenang(char winner)
     }
 }
 
-void modePlyvsCmp() //Player vs Computer
+void modePlyvsCmp() // Player vs Computer
 {
     winner = ' ';
-    response = ' ';
-
-    system("cls");
-    tampilan_masukan_nama();
-    printf("\n\t                                                   INPUT NAME PLAYER-1 : ");
-    scanf("%s%[^\n]", &input_name_player1[20]);
-
-    system("cls");
-    tampilan_pilihan_papan();
-    printf("\n\t                                        Pilih Papan Yang Akan digunakan : ");
-    scanf("%d", &size);
 
     // Validasi ukuran papan
     if (size != 3 && size != 5 && size != 7)
     {
         printf("Ukuran Papan yang anda pilih salah.\n");
-        // return 1;
+        return;
     }
 
     // Inisialisasi papan
@@ -262,23 +322,25 @@ void modePlyvsCmp() //Player vs Computer
     while (1)
     {
         // Tampilkan papan
-        cetak_papan(size);
+        cetak_papan(size, 1);
 
         // Giliran pemain & Periksa kemenangan pemain
         pergerakan_pemain1(size);
         winner = cek_pemenang(size);
         if (winner != ' ' || cek_papan_kosong(size) == 0)
         {
-            cetak_pemenang(winner);
+            cetak_pemenang(winner, 1);
+            simpan_highscore(player1, computer, "highscore1.txt");
             break;
         }
 
         // Giliran komputer & Periksa kemenangan komputer
-        pergerakan_komputer(size);
+        pergerakan_komputer(size, 1);
         winner = cek_pemenang(size);
         if (winner != ' ' || cek_papan_kosong(size) == 0)
         {
-            cetak_pemenang(winner);
+            cetak_pemenang(winner, 1);
+            simpan_highscore(player1, computer, "highscore1.txt");
             break;
         }
     }
@@ -287,24 +349,12 @@ void modePlyvsCmp() //Player vs Computer
 void modePlyvsPly() // Player1 vs player2
 {
     winner = ' ';
-    response = ' ';
-    system("cls");
-    tampilan_masukan_nama();
-    printf("\n\t                                                   INPUT NAME PLAYER - 1 : ");
-    scanf("%s", &input_name_player1[20]);
-
-    printf("\n\t                                                   INPUT NAME PLAYER - 2 : ");
-    scanf("%s", &input_name_player2[20]);
-
-    tampilan_pilihan_papan();
-    printf("\n\t                                        Pilih Papan Yang Akan digunakan : ");
-    scanf("%d", &size);
 
     // Validasi ukuran papan
     if (size != 3 && size != 5 && size != 7)
     {
         printf("Ukuran Papan yang anda pilih salah.\n");
-        // return 1;
+        return;
     }
 
     // Inisialisasi papan
@@ -313,15 +363,17 @@ void modePlyvsPly() // Player1 vs player2
     // Main game loop
     while (1)
     {
+
         // Tampilkan papan
-        cetak_papan(size);
+        cetak_papan(size, 2);
 
         // Giliran pemain 1 & Periksa kemenangan pemain
         pergerakan_pemain1(size);
         winner = cek_pemenang(size);
         if (winner != ' ' || cek_papan_kosong(size) == 0)
         {
-            cetak_pemenang(winner);
+            cetak_pemenang(winner, 1);
+            simpan_highscore(player1, player2, "highscore2.txt");
             break;
         }
 
@@ -330,28 +382,44 @@ void modePlyvsPly() // Player1 vs player2
         winner = cek_pemenang(size);
         if (winner != ' ' || cek_papan_kosong(size) == 0)
         {
-            cetak_pemenang(winner);
+            cetak_pemenang(winner, 1);
+            simpan_highscore(player1, player2, "highscore2.txt");
             break;
         }
     }
 }
 
-void cetak_papan(int size)
+void cetak_papan(int size, int modePlyvsCmp)
 {
     if (size == 3)
     {
         system("cls");
-        printf("\n\t\t============================");
-        printf("\n\t\t|   ==== Board 3x3 ====    |");
-        printf("\n\t\t============================");
+
+        if (modePlyvsCmp == 1)
+        {
+            printf("\n\t\t=============================          Name Player 1 : %s ", player1.nama);
+            printf("\n\t\t|                           |          Score Winner  : %d ", player1.skor);
+            printf("\n\t\t|   ==== Board 3x3 ====     |");
+            printf("\n\t\t|                           |          ");
+            printf("\n\t\t=============================          ");
+        }
+        else
+        {
+            printf("\n\t\t=============================          Name Player 1 : %s ", player1.nama);
+            printf("\n\t\t|                           |          Score Winner  : %d ", player1.skor);
+            printf("\n\t\t|   ==== Board 3x3 ====     |");
+            printf("\n\t\t|                           |          Name Player 2 : %s ", player2.nama);
+            printf("\n\t\t=============================          Score Winner  : %d ", player2.skor);
+        }
+
         printf("\n\t\t|        |        |        |");
         printf("\n\t\t|    %C   |    %C   |    %C   |", board[0][0], board[0][1], board[0][2]);
         printf("\n\t\t|        |        |        |");
-        printf("\n\t\t|--------------------------| ");
+        printf("\n\t\t|--------+--------+--------| ");
         printf("\n\t\t|        |        |        |");
         printf("\n\t\t|    %C   |    %C   |    %C   |", board[1][0], board[1][1], board[1][2]);
         printf("\n\t\t|        |        |        |");
-        printf("\n\t\t|--------------------------| ");
+        printf("\n\t\t|--------+--------+--------| ");
         printf("\n\t\t|        |        |        |");
         printf("\n\t\t|    %C   |    %C   |    %C   |", board[2][0], board[2][1], board[2][2]);
         printf("\n\t\t|        |        |        |");
@@ -361,25 +429,38 @@ void cetak_papan(int size)
     if (size == 5)
     {
         system("cls");
-        printf("\n\t\t===============================================");
-        printf("\n\t\t|        ========= Board 5x5 =========         |");
-        printf("\n\t\t===============================================");
+        if (modePlyvsCmp == 1)
+        {
+            printf("\n\t\t================================================          Name Player 1 : %s ", player1.nama);
+            printf("\n\t\t|                                              |          Score Winner  : %d ", player1.skor);
+            printf("\n\t\t|        ========= Board 5x5 =========         |");
+            printf("\n\t\t|                                              |");
+            printf("\n\t\t===============================================");
+        }
+        else
+        {
+            printf("\n\t\t================================================          Name Player 1 : %s ", player1.nama);
+            printf("\n\t\t|                                              |          Score Winner  : %d ", player1.skor);
+            printf("\n\t\t|        ========= Board 5x5 =========         |");
+            printf("\n\t\t|                                              |          Name Player 2 : %s ", player2.nama);
+            printf("\n\t\t===============================================           Score Winner  : %d ", player2.skor);
+        }
         printf("\n\t\t|        |        |        |         |         |");
         printf("\n\t\t|    %c   |    %c   |    %c   |     %c   |      %c  |", board[0][0], board[0][1], board[0][2], board[0][3], board[0][4]);
         printf("\n\t\t|        |        |        |         |         |");
-        printf("\n\t\t|----------------------------------------------|");
+        printf("\n\t\t|--------+--------+--------+---------+---------|");
         printf("\n\t\t|        |        |        |         |         |");
         printf("\n\t\t|    %c   |    %c   |    %c   |     %c   |      %c  |", board[1][0], board[1][1], board[1][2], board[1][3], board[1][4]);
         printf("\n\t\t|        |        |        |         |         |");
-        printf("\n\t\t|----------------------------------------------|");
+        printf("\n\t\t|--------+--------+--------+---------+---------|");
         printf("\n\t\t|        |        |        |         |         |");
-        printf("\n\t\t|    %c   |    %c   |    %c   |      %c  |      %c  |", board[2][0], board[2][1], board[2][2], board[2][3], board[2][4]);
+        printf("\n\t\t|    %c   |    %c   |    %c   |     %c   |      %c  |", board[2][0], board[2][1], board[2][2], board[2][3], board[2][4]);
         printf("\n\t\t|        |        |        |         |         |");
-        printf("\n\t\t|----------------------------------------------|");
+        printf("\n\t\t|--------+--------+--------+---------+---------|");
         printf("\n\t\t|        |        |        |         |         |");
-        printf("\n\t\t|    %c   |    %c   |    %c   |      %c  |      %c  |", board[3][0], board[3][1], board[3][2], board[3][3], board[3][4]);
+        printf("\n\t\t|    %c   |    %c   |    %c   |     %c   |      %c  |", board[3][0], board[3][1], board[3][2], board[3][3], board[3][4]);
         printf("\n\t\t|        |        |        |         |         |");
-        printf("\n\t\t|----------------------------------------------|");
+        printf("\n\t\t|--------+--------+--------+---------+---------|");
         printf("\n\t\t|        |        |        |         |         |");
         printf("\n\t\t|    %c   |    %c   |    %c   |     %c   |      %c  |", board[4][0], board[4][1], board[4][2], board[4][3], board[4][4]);
         printf("\n\t\t|        |        |        |         |         |");
@@ -389,45 +470,167 @@ void cetak_papan(int size)
     if (size == 7)
     {
         system("cls");
-        printf("\n\t\t====================================================================");
-        printf("\n\t\t|                     ========= Board 7x7 =========                |");
-        printf("\n\t\t====================================================================");
+        if (modePlyvsCmp == 1)
+        {
+            printf("\n\t\t====================================================================          Name Player 1 : %s ", player1.nama);
+            printf("\n\t\t|                                                                  |          Score Winner  : %d ", player1.skor);
+            printf("\n\t\t|                     ========= Board 7x7 =========                |");
+            printf("\n\t\t|                                                                  |");
+            printf("\n\t\t====================================================================");
+        }
+        else
+        {
+            printf("\n\t\t====================================================================          Name Player 1 : %s ", player1.nama);
+            printf("\n\t\t|                                                                  |          Score Winner  : %d ", player1.skor);
+            printf("\n\t\t|                     ========= Board 7x7 =========                |");
+            printf("\n\t\t|                                                                  |          Name Player 2 : %s ", player2.nama);
+            printf("\n\t\t====================================================================          Score Winner  : %d ", player2.skor);
+        }
         printf("\n\t\t|        |        |        |         |         |         |         |");
         printf("\n\t\t|    %c   |    %c   |    %c   |     %c   |     %c   |     %c   |    %c    |", board[0][0], board[0][1], board[0][2], board[0][3], board[0][4], board[0][5], board[0][6]);
         printf("\n\t\t|        |        |        |         |         |         |         |");
-        printf("\n\t\t|------------------------------------------------------------------|");
+        printf("\n\t\t|--------+--------+--------+---------+---------+---------+---------|");
         printf("\n\t\t|        |        |        |         |         |         |         |");
         printf("\n\t\t|    %c   |    %c   |    %c   |     %c   |     %c   |     %c   |    %c    |", board[1][0], board[1][1], board[1][2], board[1][3], board[1][4], board[1][5], board[1][6]);
         printf("\n\t\t|        |        |        |         |         |         |         |");
-        printf("\n\t\t|------------------------------------------------------------------|");
+        printf("\n\t\t|--------+--------+--------+---------+---------+---------+---------|");
         printf("\n\t\t|        |        |        |         |         |         |         |");
         printf("\n\t\t|    %c   |    %c   |    %c   |     %c   |     %c   |     %c   |    %c    |", board[2][0], board[2][1], board[2][2], board[2][3], board[2][4], board[2][5], board[2][6]);
         printf("\n\t\t|        |        |        |         |         |         |         |");
-        printf("\n\t\t|------------------------------------------------------------------|");
+        printf("\n\t\t|--------+--------+--------+---------+---------+---------+---------|");
         printf("\n\t\t|        |        |        |         |         |         |         |");
         printf("\n\t\t|    %c   |    %c   |    %c   |     %c   |     %c   |     %c   |    %c    |", board[3][0], board[3][1], board[3][2], board[3][3], board[3][4], board[3][5], board[3][6]);
         printf("\n\t\t|        |        |        |         |         |         |         |");
-        printf("\n\t\t|------------------------------------------------------------------|");
+        printf("\n\t\t|--------+--------+--------+---------+---------+---------+---------|");
         printf("\n\t\t|        |        |        |         |         |         |         |");
         printf("\n\t\t|    %c   |    %c   |    %c   |     %c   |     %c   |     %c   |    %c    |", board[4][0], board[4][1], board[4][2], board[4][3], board[4][4], board[4][5], board[4][6]);
         printf("\n\t\t|        |        |        |         |         |         |         |");
-        printf("\n\t\t|------------------------------------------------------------------|");
+        printf("\n\t\t|--------+--------+--------+---------+---------+---------+---------|");
         printf("\n\t\t|        |        |        |         |         |         |         |");
         printf("\n\t\t|    %c   |    %c   |    %c   |     %c   |     %c   |     %c   |    %c    |", board[5][0], board[5][1], board[5][2], board[5][3], board[5][4], board[5][5], board[5][6]);
         printf("\n\t\t|        |        |        |         |         |         |         |");
-        printf("\n\t\t|------------------------------------------------------------------|");
+        printf("\n\t\t|--------+--------+--------+---------+---------+---------+---------|");
         printf("\n\t\t|        |        |        |         |         |         |         |");
         printf("\n\t\t|    %c   |    %c   |    %c   |     %c   |     %c   |     %c   |    %c    |", board[6][0], board[6][1], board[6][2], board[6][3], board[6][4], board[6][5], board[6][6]);
         printf("\n\t\t|        |        |        |         |         |         |         |");
         printf("\n\t\t|------------------------------------------------------------------|");
-
         printf("\n\n");
     }
+}
+
+void simpan_highscore(pemain player1, pemain player2, const char *filename)
+{
+    // Mode Player vs Player
+    FILE *file = fopen("highscore2.txt", "a");
+    if (file == NULL)
+    {
+        printf("Gagal membuka file highscore.txt\n");
+        return;
+    }
+
+    if (player2.nama[0] == '\0') // Mode player vs computer
+    {
+        file = fopen("highscore1.txt", "a+");
+        if (file == NULL)
+        {
+            printf("Gagal membuka file highscore1.txt\n");
+            return;
+        }
+
+        // Mencari nama pemain di file dan menambahkan skor jika ditemukan
+        int found = 0;
+        pemain current_player;
+        while (fscanf(file, "%s %d", current_player.nama, &current_player.skor) != EOF)
+        {
+            if (strcmp(current_player.nama, player1.nama) == 0)
+            {
+                current_player.skor += player1.skor;
+                found = 1;
+                break;
+            }
+        }
+
+        // Menulis data jika nama pemain tidak ditemukan
+        if (!found)
+        {
+            fprintf(file, "%s %d\n", player1.nama, player1.skor);
+        }
+
+        fclose(file);
+    }
+
+    else // Mode Player vs Player
+    {
+        file = fopen("highscore2.txt", "a");
+        if (file == NULL)
+        {
+            printf("Gagal membuka file highscore2.txt\n");
+            return;
+        }
+
+        // Mencari nama pemain di file dan menambahkan skor jika ditemukan
+        int found = 0;
+        pemain current_player1, current_player2;
+        while (fscanf(file, "%s %d %s %d", current_player1.nama, &current_player1.skor, current_player2.nama, &current_player2.skor) != EOF)
+        {
+            if (strcmp(current_player1.nama, player1.nama) == 0)
+            {
+                current_player1.skor += player1.skor;
+                found = 1;
+                break;
+            }
+        }
+
+        // Menulis data jika nama pemain tidak ditemukan
+        if (!found)
+        {
+            fprintf(file, "%s %d %s %d\n", player1.nama, player1.skor, player2.nama, player2.skor);
+        }
+
+        fclose(file);
+    }
+}
+
+void tampil_highscore(const char *filename)
+{
+    system("cls");
+    pemain current_player1, current_player2;
+    FILE *file = fopen("highscore2.txt", "r"); // mode player vs player
+    if (file == NULL)
+    {
+        printf("Gagal membuka file highscore.txt\n");
+        return;
+    }
+
+    printf("\n=========================== Highscore =======================");
+    printf("\n| Name Player 1       Score     |  Name player 2      Score |");
+    printf("\n=============================================================\n");
+
+    while (1)
+    {
+        if (fscanf(file, "%s %d", current_player1.nama, &current_player1.skor) == EOF)
+            break;
+
+        printf("|  %-20s\t%d   ", current_player1.nama, current_player1.skor);
+
+        // Jika mode Player vs Player, baca data pemain kedua
+        if (fscanf(file, "%s %d", current_player2.nama, &current_player2.skor) == EOF)
+            break;
+
+        printf("\t|  %-20s\t%d   |\n", current_player2.nama, current_player2.skor);
+        printf("|-------------------------------|---------------------------|\n");
+    }
+
+    printf("=============================================================\n");
+    getchar(); // Membaca karakter newline setelah Enter
+
+    fclose(file);
 }
 
 void tampilan_menu_awal()
 {
     int inputAwal;
+    system("cls");
     printf("\n\t        xx   xx                                                                                            xx   xx     ");
     printf("\n\t         xx xx                                                                                              xx xx      ");
     printf("\n\t          xxx    #======================================================================================#    xxx       ");
@@ -455,6 +658,7 @@ void tampilan_menu_awal()
     printf("\n\t         oo  oo  # ==================================================================================== #  oo  oo      ");
     printf("\n\t         oo  oo  #                                     |1| START                                        #  oo  oo      ");
     printf("\n\t          oooo   #                                     |2| RULE OF GAME                                 #   oooo       ");
+    printf("\n\t                 #                                     |3| HIGHSCORE                                    #              ");
     printf("\n\t                 #                                     |0| QUIT                                         #");
     printf("\n\t                 # ==================================================================================== #");
     printf("\n\t                                                     Masukan Angka : ");
@@ -584,7 +788,7 @@ void tampilan_pilihan_level()
     printf("\n\t       oo  oo  #                                        |2| MEDIUM                                   #  oo  oo      ");
     printf("\n\t       oo  oo  #                                        |3| HARD                                     #  oo  oo      ");
     printf("\n\t        oooo   # =================================================================================== #   oooo       ");
-    printf("\n\t                                                   Masukan Angka : ");
+    printf("\n");
 }
 
 void tampilan_pilihan_papan()
