@@ -1,0 +1,2 @@
+fadil 1 akbar 2
+www 1 Computer 0
